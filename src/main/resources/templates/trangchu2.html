@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Người Dùng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .tabs {
+            display: flex;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #333;
+            border: none;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .tab:hover {
+            background-color: #575757;
+        }
+        .active {
+            background-color: #3da145;
+        }
+        .container {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .table-wrapper {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #5a67d8;
+            color: white;
+        }
+        tr {
+            transition: background-color 0.3s;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .pagination button, .pagination span {
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>Quản Lý Người Dùng</h1>
+
+<div class="tabs">
+    <button class="tab active" onclick="showTab('addUser')">Thêm Người Dùng</button>
+    <button class="tab" onclick="showTab('findUser')">Tìm Người Dùng</button>
+    <button class="tab" onclick="showTab('updateUser')">Cập nhật Người Dùng</button>
+    <button class="tab" onclick="showTab('deleteUser')">Xóa Người Dùng</button>
+    <button class="tab" onclick="logout()">Log out</button>
+</div>
+
+<div class="container" id="addUser">
+    <h2>Thêm Người Dùng</h2>
+    <form id="addUserForm">
+        <div class="input-group">
+            <label for="usernameadd">Username:</label>
+            <input type="text" id="usernameadd" name="usernameadd" required>
+        </div>
+        <div class="input-group">
+            <label for="passwordadd">Password:</label>
+            <input type="password" id="passwordadd" name="passwordadd" required>
+        </div>
+        <div class="input-group">
+            <label for="nameadd">Name:</label>
+            <input type="text" id="nameadd" name="nameadd" required>
+        </div>
+        <div class="input-group">
+            <label for="emailadd">Email:</label>
+            <input type="email" id="emailadd" name="emailadd" required>
+        </div>
+        <div class="input-group">
+            <label for="genderadd">Gender:</label>
+            <select id="genderadd" name="genderadd">
+                <option value="">Chọn giới tính</option>
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+                <option value="other">Khác</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="birthdayadd">Birthday:</label>
+            <input type="date" id="birthdayadd" name="birthdayadd" required>
+        </div>
+        <button type="submit">Thêm</button>
+    </form>
+</div>
+
+<div class="container" id="findUser" style="display:none;">
+    <h2>Tìm Người Dùng</h2>
+    <div class="input-group">
+        <label for="searchID">Nhập ID:</label>
+        <input type="text" id="searchID">
+    </div>
+    <button type="button" onclick="findUser()">Tìm</button>
+</div>
+
+<div class="container" id="updateUser" style="display:none;">
+    <h2>Cập Nhật Người Dùng</h2>
+    <div class="input-group">
+        <label for="updateID">Nhập ID:</label>
+        <input type="text" id="updateID">
+    </div>
+    <button type="button" onclick="getData()">Lấy Thông Tin</button>
+    <form style="margin-top: 20px">
+        <div class="input-group">
+            <label for="passwordup">Password:</label>
+            <input type="password" id="passwordup" name="passwordup" required>
+        </div>
+        <div class="input-group">
+            <label for="passwordupre">Nhập lại password:</label>
+            <input type="password" id="passwordupre" name="passwordup" required>
+        </div>
+        <div class="input-group">
+            <label for="nameup">Name:</label>
+            <input type="text" id="nameup" name="nameup" required>
+        </div>
+        <div class="input-group">
+            <label for="emailup">Email:</label>
+            <input type="email" id="emailup" name="emailup" required>
+        </div>
+        <div class="input-group">
+            <label for="genderup">Gender:</label>
+            <select id="genderup" name="genderup">
+                <option value="">Chọn giới tính</option>
+                <option value="Male">Nam</option>
+                <option value="Female">Nữ</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label for="birthdayup">Birthday:</label>
+            <input type="date" id="birthdayup" name="birthdayup" required>
+        </div>
+        <button type="submit" onclick="saveUser()">Cập nhật</button>
+    </form>
+</div>
+
+<div class="container" id="deleteUser" style="display:none;">
+    <h2>Xóa Người Dùng</h2>
+    <div class="input-group">
+        <label for="deleteID">Nhập ID:</label>
+        <input type="text" id="deleteID">
+    </div>
+    <button type="button" onclick="deleteUser()">Xóa</button>
+</div>
+
+<div class="table-wrapper">
+    <button class="reload-button" onclick="loadUsers()">Tải Lại Danh Sách</button>
+    <table id="userTable">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Gender</th>
+            <th>Birthday</th>
+        </tr>
+    </table>
+
+    <div class="pagination" id="pagination">
+        <button onclick="changePage(-1)" id="prevBtn" disabled>Trước</button>
+        <span id="pageButtons"></span>
+        <button onclick="changePage(1)" id="nextBtn">Sau</button>
+    </div>
+
+</div>
+
+<script>
+    function showTab(tabId) {
+        const tabs = document.querySelectorAll('.container');
+        tabs.forEach(tab => {
+            tab.style.display = 'none';
+        });
+        document.getElementById(tabId).style.display = 'block';
+
+        const tabButtons = document.querySelectorAll('.tab');
+        tabButtons.forEach(button => {
+            button.classList.remove('active');
+        });
+        document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+    }
+
+    showTab('addUser');
+
+    const apiUrl = '/users';
+    const usersPerPage = 5;
+    let currentPage = 1;
+    let users = [];
+
+    window.onload = function() {
+        loadUsers();
+    };
+
+    function loadUsers() {
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                users = data;
+                renderTable();
+                updatePagination();
+            })
+            .catch(error => console.error('Error fetching users:', error));
+    }
+
+    function renderTable() {
+        const table = document.getElementById('userTable');
+        const rowCount = table.rows.length;
+        for (let i = rowCount - 1; i > 0; i--) {
+            table.deleteRow(i);
+        }
+
+        const start = (currentPage - 1) * usersPerPage;
+        const end = start + usersPerPage;
+        const paginatedUsers = users.slice(start, end);
+
+        paginatedUsers.forEach(user => {
+            const row = table.insertRow();
+            row.insertCell(0).textContent = user.id;
+            row.insertCell(1).textContent = user.username;
+            row.insertCell(2).textContent = user.name;
+            row.insertCell(3).textContent = user.email;
+            row.insertCell(4).textContent = user.gender;
+            row.insertCell(5).textContent = user.birthday;
+        });
+    }
+
+    function changePage(direction) {
+        currentPage += direction;
+        renderTable();
+        updatePagination();
+    }
+
+    function updatePagination() {
+        document.getElementById('prevBtn').disabled = currentPage === 1;
+        const totalPages = Math.ceil(users.length / usersPerPage);
+        document.getElementById('nextBtn').disabled = currentPage === totalPages;
+
+        const pageButtons = document.getElementById('pageButtons');
+        pageButtons.innerHTML = ''; // Xóa các nút trang cũ
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.disabled = (i === currentPage);
+            pageButton.onclick = () => {
+                currentPage = i;
+                renderTable();
+                updatePagination();
+            };
+            pageButtons.appendChild(pageButton);
+        }
+    }
+
+    function getData() {
+        const userId = document.getElementById('updateID').value;
+        fetch(`${apiUrl}/${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('User not found');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('nameup').value = data.name;
+                document.getElementById('emailup').value = data.email;
+                document.getElementById('genderup').value = data.gender;
+                document.getElementById('birthdayup').value = data.birthday;
+
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error('Error fetching user data:', error);
+            });
+    }
+
+    document.getElementById('addUserForm').onsubmit = function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('usernameadd').value;
+        const password = document.getElementById('passwordadd').value;
+        const name = document.getElementById('nameadd').value;
+        const email = document.getElementById('emailadd').value;
+        const gender = document.getElementById('genderadd').value;
+        const birthday = document.getElementById('birthdayadd').value;
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password, name, email, gender, birthday })
+        })
+            .then(response => {
+                if (response.ok) {
+                    loadUsers();
+                    alert('Người dùng đã được thêm!');
+                    document.getElementById('addUserForm').reset();
+                } else {
+                    return response.json().then(err => {
+                        alert('Lỗi: ' + err.message);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error adding user:', error);
+                alert('Đã xảy ra lỗi khi thêm người dùng.');
+            });
+    };
+
+    function logout() {
+        window.location.href = '/home22';
+    }
+
+    function findUser() {
+        const userId = document.getElementById('searchID').value;
+        fetch(`${apiUrl}/${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Người dùng không tồn tại');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const table = document.getElementById('userTable');
+                const rowCount = table.rows.length;
+                for (let i = rowCount - 1; i > 0; i--) {
+                    table.deleteRow(i);
+                }
+                const row = table.insertRow();
+                row.insertCell(0).textContent = data.id;
+                row.insertCell(1).textContent = data.username;
+                row.insertCell(2).textContent = data.name;
+                row.insertCell(3).textContent = data.email;
+                row.insertCell(4).textContent = data.gender;
+                row.insertCell(5).textContent = data.birthday;
+            })
+            .catch(error => {
+                alert(error.message);
+                console.error('Error finding user:', error);
+            });
+    }
+
+    function deleteUser() {
+        const userId = document.getElementById('deleteID').value;
+        fetch(`${apiUrl}/${userId}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                loadUsers();
+                if (response.ok) {
+                    alert('Người dùng đã được xóa!');
+                } else {
+                    alert('Có lỗi xảy ra khi xóa người dùng.');
+                }
+            })
+            .catch(error => console.error('Error deleting user:', error));
+    }
+
+    function updateUser() {
+        const userId = document.getElementById('updateID').value;
+        const password = document.getElementById('passwordup').value;
+        const name = document.getElementById('nameup').value;
+        const email = document.getElementById('emailup').value;
+        const gender = document.getElementById('genderup').value;
+        const birthday = document.getElementById('birthdayup').value;
+
+        fetch(`${apiUrl}/${userId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ password, name, email, gender, birthday })
+        })
+            .then(response => {
+                loadUsers();
+            })
+            .catch(error => console.error('Error updating user:', error));
+    }
+
+    function saveUser() {
+        const password = document.getElementById('passwordup').value;
+        const password2 = document.getElementById('passwordupre').value;
+
+        if (password !== password2) {
+            alert('Mật khẩu và Nhập lại mật khẩu không giống nhau!');
+            return;
+        }
+
+        updateUser();
+    }
+</script>
+</body>
+</html>
